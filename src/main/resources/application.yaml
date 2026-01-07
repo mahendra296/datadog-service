@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: datadog-service
+
+server:
+  port: 8080
+
+logbook:
+  include:
+    - /**
+  exclude:
+    - /management/**
+    - /actuator/**
+  filter:
+    enabled: true
+  format:
+    style: json
+  strategy: default
+  minimum-status: 100
+  obfuscate:
+    headers:
+      - Authorization
+      - x-api-key
+      - x-cognito-id-token
+      - x-jwt-auth
+      - pin
+      - apikey
+    parameters:
+      - password
+      - pin
+    bodyFields:
+      - image
+      - pin
+      - password
+    bodyFieldsJsonPath:
+      data:
+        - password
+        - secret
