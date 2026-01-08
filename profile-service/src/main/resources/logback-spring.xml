@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Define log directory and file name -->
+    <property name="LOG_DIR" value="logs"/>
+    <property name="LOG_FILE" value="profile-service"/>
+
+    <!-- Console Appender -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %X{correlationId} %X{customerId} %X{APIPlatform} %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling File Appender -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${LOG_FILE}.log</file>
+        <encoder>
+            <pattern>
+                %d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %X{correlationId} %X{customerId} %X{APIPlatform} %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Daily rollover with size limit -->
+            <fileNamePattern>${LOG_DIR}/${LOG_FILE}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- Max file size before rolling -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- Keep 30 days of history -->
+            <maxHistory>30</maxHistory>
+            <!-- Total size cap for all log files -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- Spring Profile for Logstash -->
+    <springProfile name="logstash">
+        <logger name="ROOT" level="INFO">
+        </logger>
+
+        <logger name="com.datadog.profile" level="DEBUG">
+        </logger>
+
+        <logger name="org.zalando.logbook" level="TRACE">
+        </logger>
+    </springProfile>
+
+</configuration>

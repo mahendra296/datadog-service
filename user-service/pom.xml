@@ -12,11 +12,23 @@
 	<description>User Service Module - Contains user-related operations</description>
 
 	<dependencies>
-		<!-- Spring Boot dependencies -->
+		<!-- Internal modules -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
+			<groupId>com.datadog</groupId>
+			<artifactId>common</artifactId>
 		</dependency>
+
+		<!-- Spring Cloud OpenFeign -->
+		<!--<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>-->
+
+		<!-- Spring Boot dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>  <!-- Correct -->
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-json</artifactId>
@@ -28,30 +40,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- Logbook dependencies -->
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-okhttp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.datadoghq</groupId>

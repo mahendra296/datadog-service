@@ -1,18 +1,14 @@
 spring:
   application:
-    name: user-service
-  autoconfigure:
-    exclude:
-      - org.springframework.cloud.autoconfigure.LifecycleMvcEndpointAutoConfiguration
+    name: profile-service
 
 server:
-  port: 8080
-
-profile-service:
-  url: http://localhost:8081
+  port: 8081
 
 logging:
   level:
+    com.datadog.profile: DEBUG
+    org.springframework.web: INFO
     org.zalando.logbook: TRACE
 
 logbook:

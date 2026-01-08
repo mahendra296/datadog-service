@@ -1,4 +1,4 @@
-package com.datadog.user.config;
+package com.datadog.common.config;
 
 import jakarta.servlet.Filter;
 import java.util.List;

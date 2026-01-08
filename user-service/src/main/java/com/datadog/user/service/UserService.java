@@ -1,23 +1,27 @@
 package com.datadog.user.service;
 
+import com.datadog.common.client.ProfileServiceClient;
+import com.datadog.common.dto.AddressDto;
+import com.datadog.common.dto.EducationDto;
+import com.datadog.common.dto.UserDetailsResponse;
 import com.datadog.user.model.User;
 import com.datadog.user.repository.UserRepository;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final ProfileServiceClient profileServiceClient;
 
     public User createUser(User user) {
         log.info("Creating new user with username: {}", user.getUsername());
@@ -53,6 +57,60 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public Optional<UserDetailsResponse> getUserDetailsById(Long id) {
+        log.info("Fetching user details with id: {}", id);
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isEmpty()) {
+            log.warn("User not found with id: {}", id);
+            return Optional.empty();
+        }
+
+        User user = userOptional.get();
+        log.debug("User found: {}, fetching profile data from profile-service", user.getUsername());
+
+        List<AddressDto> addresses = fetchAddresses(id);
+        List<EducationDto> educations = fetchEducations(id);
+
+        UserDetailsResponse response = UserDetailsResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .active(user.isActive())
+                .addresses(addresses)
+                .educations(educations)
+                .build();
+
+        log.info(
+                "User details fetched successfully for id: {}, addresses: {}, educations: {}",
+                id,
+                addresses.size(),
+                educations.size());
+        return Optional.of(response);
+    }
+
+    private List<AddressDto> fetchAddresses(Long userId) {
+        try {
+            log.debug("Fetching addresses for userId: {}", userId);
+            return profileServiceClient.getAddressesByUserId(userId);
+        } catch (Exception e) {
+            log.error("Failed to fetch addresses for userId: {}, error: {}", userId, e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    private List<EducationDto> fetchEducations(Long userId) {
+        try {
+            log.debug("Fetching educations for userId: {}", userId);
+            return profileServiceClient.getEducationsByUserId(userId);
+        } catch (Exception e) {
+            log.error("Failed to fetch educations for userId: {}, error: {}", userId, e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     public List<User> getAllUsers() {

@@ -1,5 +1,6 @@
 package com.datadog.user.controller;
 
+import com.datadog.common.dto.UserDetailsResponse;
 import com.datadog.user.model.User;
 import com.datadog.user.service.UserService;
 import java.util.List;
@@ -43,13 +44,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDetailsResponse> getUserById(@PathVariable Long id) {
         log.info("REST request to get user by id: {}", id);
         return userService
-                .getUserById(id)
-                .map(user -> {
-                    log.info("REST response - user found: {}", user.getUsername());
-                    return ResponseEntity.ok(user);
+                .getUserDetailsById(id)
+                .map(userDetails -> {
+                    log.info("REST response - user found: {}", userDetails.getUsername());
+                    return ResponseEntity.ok(userDetails);
                 })
                 .orElseGet(() -> {
                     log.warn("REST response - user not found with id: {}", id);
