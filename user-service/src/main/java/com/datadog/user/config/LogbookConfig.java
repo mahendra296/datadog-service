@@ -1,4 +1,4 @@
-package com.datadog.config;
+package com.datadog.user.config;
 
 import jakarta.servlet.Filter;
 import java.util.List;
@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import okhttp3.OkHttpClient;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +18,6 @@ import org.zalando.logbook.Logbook;
 import org.zalando.logbook.QueryFilter;
 import org.zalando.logbook.core.BodyFilters;
 import org.zalando.logbook.core.Conditions;
-import org.zalando.logbook.core.DefaultHttpLogFormatter;
 import org.zalando.logbook.core.DefaultHttpLogWriter;
 import org.zalando.logbook.core.DefaultSink;
 import org.zalando.logbook.core.HeaderFilters;
@@ -47,8 +45,7 @@ public class LogbookConfig {
         Map<String, List<String>> bodyFieldsJsonPath = properties.getObfuscate().getBodyFieldsJsonPath();
 
         BodyFilter bodyFilter = BodyFilter.merge(
-                BodyFilters.defaultValue(),
-                JsonBodyFilters.replaceJsonStringProperty(bodyFields, "XXX"));
+                BodyFilters.defaultValue(), JsonBodyFilters.replaceJsonStringProperty(bodyFields, "XXX"));
 
         if (bodyFieldsJsonPath != null && !bodyFieldsJsonPath.isEmpty()) {
             for (Map.Entry<String, List<String>> entry : bodyFieldsJsonPath.entrySet()) {
@@ -69,9 +66,7 @@ public class LogbookConfig {
         if (headers == null || headers.isEmpty()) {
             return HeaderFilters.defaultValue();
         }
-        return HeaderFilter.merge(
-                HeaderFilters.defaultValue(),
-                HeaderFilters.replaceHeaders(headers, "XXX"));
+        return HeaderFilter.merge(HeaderFilters.defaultValue(), HeaderFilters.replaceHeaders(headers, "XXX"));
     }
 
     @Bean
@@ -80,23 +75,18 @@ public class LogbookConfig {
         if (parameters == null || parameters.isEmpty()) {
             return QueryFilters.defaultValue();
         }
-        return QueryFilter.merge(
-                QueryFilters.defaultValue(),
-                QueryFilters.replaceQuery(parameters::contains, "XXX"));
+        return QueryFilter.merge(QueryFilters.defaultValue(), QueryFilters.replaceQuery(parameters::contains, "XXX"));
     }
 
     @Bean
     public Logbook logbook(BodyFilter bodyFilter, HeaderFilter headerFilter, QueryFilter queryFilter) {
         return Logbook.builder()
                 .condition(Conditions.exclude(
-                        Conditions.requestTo("/management/**"),
-                        Conditions.requestTo("/actuator/**")))
+                        Conditions.requestTo("/management/**"), Conditions.requestTo("/actuator/**")))
                 .queryFilter(queryFilter)
                 .headerFilter(headerFilter)
                 .bodyFilter(bodyFilter)
-                .sink(new DefaultSink(
-                        new JsonHttpLogFormatter(),
-                        new DefaultHttpLogWriter()))
+                .sink(new DefaultSink(new JsonHttpLogFormatter(), new DefaultHttpLogWriter()))
                 .build();
     }
 

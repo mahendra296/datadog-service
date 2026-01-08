@@ -1,9 +1,13 @@
 spring:
   application:
-    name: datadog-service
+    name: user-service
 
 server:
   port: 8080
+
+logging:
+  level:
+    org.zalando.logbook: TRACE
 
 logbook:
   include:

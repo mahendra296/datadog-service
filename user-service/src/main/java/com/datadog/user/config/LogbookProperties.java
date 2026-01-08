@@ -1,4 +1,4 @@
-package com.datadog.config;
+package com.datadog.user.config;
 
 import java.util.List;
 import java.util.Map;

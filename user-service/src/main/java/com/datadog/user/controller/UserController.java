@@ -1,7 +1,7 @@
-package com.datadog.controller;
+package com.datadog.user.controller;
 
-import com.datadog.model.User;
-import com.datadog.service.UserService;
+import com.datadog.user.model.User;
+import com.datadog.user.service.UserService;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

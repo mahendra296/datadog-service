@@ -9,129 +9,103 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.datadog</groupId>
-	<artifactId>datadog-service</artifactId>
+	<artifactId>datadog-service-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>datadog-service</name>
-	<description>Demo project for Spring Boot</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	<packaging>pom</packaging>
+	<name>datadog-service-parent</name>
+	<description>Parent POM for Datadog Service Multi-Module Project</description>
+
+	<modules>
+		<module>user-service</module>
+        <module>profile-service</module>
+    </modules>
+
 	<properties>
 		<java.version>21</java.version>
 		<logbook.version>3.10.0</logbook.version>
-        <jib.version>3.3.2</jib.version>
+		<jib.version>3.3.2</jib.version>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 
-		<!-- Logbook dependencies (manual config for Spring Boot 4.x compatibility) -->
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-core</artifactId>
-			<version>${logbook.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-json</artifactId>
-			<version>${logbook.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-servlet</artifactId>
-			<version>${logbook.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>logbook-okhttp</artifactId>
-			<version>${logbook.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>4.12.0</version>
-		</dependency>
-        <dependency>
-            <groupId>com.datadoghq</groupId>
-            <artifactId>dd-trace-api</artifactId>
-            <version>1.31.0</version>
-        </dependency>
-	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<!-- Internal modules -->
+			<dependency>
+				<groupId>com.datadog</groupId>
+				<artifactId>user-service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- Logbook dependencies -->
+			<dependency>
+				<groupId>org.zalando</groupId>
+				<artifactId>logbook-core</artifactId>
+				<version>${logbook.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.zalando</groupId>
+				<artifactId>logbook-json</artifactId>
+				<version>${logbook.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.zalando</groupId>
+				<artifactId>logbook-servlet</artifactId>
+				<version>${logbook.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.zalando</groupId>
+				<artifactId>logbook-okhttp</artifactId>
+				<version>${logbook.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp</artifactId>
+				<version>4.12.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.datadoghq</groupId>
+				<artifactId>dd-trace-api</artifactId>
+				<version>1.31.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-            <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.44.2</version>
-                <configuration>
-                    <java>
-                        <includes>
-                            <include>src/**/*.java</include>
-                            <include>test/**/*.java</include>
-                        </includes>
-                        <palantirJavaFormat>
-                            <version>2.50.0</version>
-                            <style>PALANTIR</style>
-                            <formatJavadoc>false</formatJavadoc>
-                        </palantirJavaFormat>
-                        <removeUnusedImports/>
-                        <!-- You can use in your code @spotless:off and @spotless:on to disable auto-format -->
-                        <toggleOffOn/>
-                    </java>
-                </configuration>
-            </plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<annotationProcessorPaths>
+							<path>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+							</path>
+						</annotationProcessorPaths>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.diffplug.spotless</groupId>
+					<artifactId>spotless-maven-plugin</artifactId>
+					<version>2.44.2</version>
+					<configuration>
+						<java>
+							<includes>
+								<include>src/**/*.java</include>
+								<include>test/**/*.java</include>
+							</includes>
+							<palantirJavaFormat>
+								<version>2.50.0</version>
+								<style>PALANTIR</style>
+								<formatJavadoc>false</formatJavadoc>
+							</palantirJavaFormat>
+							<removeUnusedImports/>
+							<toggleOffOn/>
+						</java>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>

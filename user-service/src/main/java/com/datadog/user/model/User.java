@@ -1,4 +1,4 @@
-package com.datadog.model;
+package com.datadog.user.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

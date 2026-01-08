@@ -1,12 +1,11 @@
-package com.datadog;
+package com.datadog.user;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DatadogServiceApplication {
-
+public class UserServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(DatadogServiceApplication.class, args);
+        SpringApplication.run(UserServiceApplication.class, args);
     }
 }

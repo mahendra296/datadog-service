@@ -160,7 +160,32 @@ Add the following JVM arguments when running the application:
 java -javaagent:C:\datadog\dd-java-agent.jar -Ddd.service=datadog-service -Ddd.env=local -Ddd.version=1.0.0 -Ddd.logs.injection=true -Ddd.trace.sample.rate=1 -Ddd.agent.host=localhost -Ddd.agent.port=8126 -jar target/datadog-service-0.0.1-SNAPSHOT.jar
 ```
 
-### Step 4: Verify Traces
+### Step 4: Configure Datadog Log Collection
+
+Create a configuration file for log collection:
+
+```
+C:\ProgramData\Datadog\conf.d\datadog-service.d\conf.yaml
+```
+
+Add the following content:
+
+```yaml
+logs:
+  - type: file
+    path: "C:\\Projects\\datadog-service\\logs\\*.log"
+    service: "datadog-service"
+    source: "java"
+    env: "local"
+```
+
+Restart the Datadog Agent after creating the configuration:
+
+```powershell
+& "C:\Program Files\Datadog\Datadog Agent\bin\agent.exe" restart-service
+```
+
+### Step 5: Verify Traces
 
 Monitor the Datadog trace agent logs:
 
@@ -169,3 +194,44 @@ Get-Content "C:\ProgramData\Datadog\logs\trace-agent.log" -Wait -Tail 20
 ```
 
 View your traces in the Datadog APM dashboard: https://app.datadoghq.com/apm/traces
+
+View your logs in the Datadog Logs dashboard: https://app.datadoghq.com/logs
+
+## Correlation ID Filter
+
+The application includes a correlation ID filter that automatically generates or extracts a correlation ID for each request. This helps in tracing requests across distributed systems and correlating logs.
+
+### How It Works
+
+1. **Extracts** correlation ID from `X-Correlation-ID` request header if provided
+2. **Generates** a new UUID if no correlation ID is provided
+3. **Adds** the correlation ID to MDC (Mapped Diagnostic Context) for logging
+4. **Returns** the correlation ID in the response header
+
+### Usage
+
+**Without header (auto-generated):**
+```bash
+curl http://localhost:8080/api/users
+```
+
+**With custom correlation ID:**
+```bash
+curl -H "X-Correlation-ID: my-custom-id-123" http://localhost:8080/api/users
+```
+
+### Example Log Output
+
+```
+08-01-2026 10:30:45.123 [http-nio-8080-exec-1] INFO  a7d8f2ce-4b5a-4c3d-9e1f-2a3b4c5d6e7f  c.d.controller.UserController - REST request to create user: johndoe
+```
+
+### Response Header
+
+The correlation ID is returned in the response header:
+
+```
+X-Correlation-ID: a7d8f2ce-4b5a-4c3d-9e1f-2a3b4c5d6e7f
+```
+
+This allows clients to track their requests through the system and reference the correlation ID when reporting issues.
